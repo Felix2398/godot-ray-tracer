@@ -4,6 +4,9 @@ extends RefCounted
 var image_width = 800
 var image_height = 600
 
+var samples_per_pixel = 1
+var pixel_sample_scale: float
+
 var camera_center = Vector3(0, 0, 0)
 var focal_length = 1.0
 
@@ -14,6 +17,8 @@ var delta_y: Vector3
 func initialize():
 	var viewport_height = 2.0
 	var viewport_width = viewport_height * (float(image_width) / image_height)
+	
+	pixel_sample_scale = 1.0 / samples_per_pixel
 
 	# calculate viewport corners
 	var viewport_upper_right = Vector3(viewport_width, 0, 0)
@@ -37,11 +42,12 @@ func render(world: Hittable) -> Image:
 	image = Image.create(image_width, image_height, false, Image.FORMAT_RGB8)
 	for x in image_width:
 		for y in image_height:
-			var pixel_center = start_pixel + (x * delta_x) + (y * delta_y)
-			var ray_direction = pixel_center - camera_center
-			var ray = Ray.new(camera_center, ray_direction)
+			var pixel_color = Color(0, 0, 0)
+			for sample in range(samples_per_pixel):
+				var ray = get_ray(x, y)
+				pixel_color += ray_color(ray, world)
 			
-			var color = ray_color(ray, world)
+			var color = pixel_sample_scale * pixel_color
 			image.set_pixel(x, y, color)
 	
 	return image
@@ -55,3 +61,13 @@ func ray_color(ray: Ray, world: Hittable):
 		var normalized_direction = ray.direction.normalized()
 		var a = 0.5 * (normalized_direction.y + 1.0)
 		return (1.0 - a) * Color.WHITE + a * Color.SKY_BLUE
+
+func get_ray(x: int, y: int) -> Ray:
+	var offset = sample_square()
+	var pixel_sample = start_pixel + ((x + offset.x) * delta_x) + ((y + offset.y) * delta_y)
+	var ray_origin = camera_center
+	var ray_direction = pixel_sample - camera_center
+	return Ray.new(ray_origin, ray_direction)
+
+func sample_square() -> Vector3:
+	return Vector3(randf() - 0.5, randf() - 0.5, 0)
