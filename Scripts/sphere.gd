@@ -29,7 +29,8 @@ func hit(ray: Ray, ray_tmin: float, ray_tmax: float, rec: HitRecord) -> bool:
 			
 	rec.t = root
 	rec.p = ray.at(rec.t)
-	rec.normal = (rec.p - center) / radius
+	var outward_normal = (rec.p - center) / radius
+	rec.set_face_normal(ray, outward_normal)
 	
 	return true
 
