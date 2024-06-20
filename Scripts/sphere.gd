@@ -4,9 +4,9 @@ extends Hittable
 var center: Vector3
 var radius: float
 
-func _init(center: Vector3, radius: float):
-	self.center = center
-	self.radius = radius
+func _init(sphere_center: Vector3, sphere_radius: float):
+	self.center = sphere_center
+	self.radius = sphere_radius
 
 func hit(ray: Ray, ray_tmin: float, ray_tmax: float, rec: HitRecord) -> bool:
 	var oc = center - ray.origin

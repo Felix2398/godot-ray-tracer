@@ -1,6 +1,5 @@
 class_name Hittable
 extends RefCounted
 
-func hit(ray: Ray, ray_tmin: float, ray_tmax: float, rec: HitRecord) -> bool:
-	assert(true)
+func hit(_ray: Ray, _ray_tmin: float, _ray_tmax: float, _rec: HitRecord) -> bool:
 	return false

@@ -1,5 +1,5 @@
 class_name HittableList
-extends RefCounted
+extends Hittable
 
 var objects = []
 
@@ -15,10 +15,10 @@ func hit(ray: Ray, ray_tmin: float, ray_tmax: float, rec: HitRecord) -> bool:
 	var closest_so_far = ray_tmax
 	
 	for object in objects:
-		var hit = object.hit(ray, ray_tmin, closest_so_far, temp_rec)
-		if (hit):
+		var isHit = object.hit(ray, ray_tmin, closest_so_far, temp_rec)
+		if (isHit):
 			hit_anything = true
 			closest_so_far = temp_rec.t
-			rec = temp_rec
+			rec.copy_from(temp_rec)
 	
 	return hit_anything

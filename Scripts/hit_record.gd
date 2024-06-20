@@ -10,6 +10,12 @@ func set_face_normal(ray: Ray, outward_normal: Vector3):
 	# its assumed that outward_normal has unit length
 	front_face = ray.direction.dot(outward_normal) < 0
 	if front_face:
-		self.normal = outward_normal
+		normal = outward_normal
 	else:
-		self.normal = outward_normal * -1
+		normal = outward_normal * -1
+
+func copy_from(other: HitRecord):
+	self.p = other.p
+	self.normal = other.normal
+	self.t = other.t
+	self.front_face = other.front_face

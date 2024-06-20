@@ -5,10 +5,18 @@ const HEIGHT = 600
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	# tests
-	var sphere = Sphere.new(Vector3(1, 1, 1), 5)
-	sphere.print()
-	
+	print("start rendering")
+	render()
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta):
+	pass
+
+func render():
+	# world
+	var world = HittableList.new()
+	world.add(Sphere.new(Vector3(0, 0, -1), 0.5))
+	world.add(Sphere.new(Vector3(0, -100.5, -1), 100))
 	
 	# camera
 	var viewport_height = 2.0
@@ -42,19 +50,17 @@ func _ready():
 			ray.origin = camera_center
 			ray.direction = ray_direction
 			
-			image.set_pixel(x, y, ray_color(ray))
-	image.save_png("render.png")
+			var color = ray_color(ray, world)
+			image.set_pixel(x, y, color)
+			
+	# image.save_png("render.png")
 	texture = ImageTexture.create_from_image(image)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
-func ray_color(ray: Ray):
-	var t = hit_sphere(Vector3(0, 0, -1), 0.5, ray)
-	if t > 0:
-		var n = (ray.at(t) - Vector3(0,0,-1)).normalized()
-		return 0.5 * Color(n.x + 1, n.y + 1, n.z + 1)
+func ray_color(ray: Ray, world: Hittable):
+	var rec = HitRecord.new()
+	if (world.hit(ray, 0, INF, rec)):
+		var c = rec.normal + Vector3(1, 1, 1)
+		return 0.5 * Color(c.x, c.y, c.z)
 	else:
 		var normalized_direction = ray.direction.normalized()
 		var a = 0.5 * (normalized_direction.y + 1.0)
