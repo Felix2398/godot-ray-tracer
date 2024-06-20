@@ -5,6 +5,11 @@ const HEIGHT = 600
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	# tests
+	var sphere = Sphere.new(Vector3(1, 1, 1), 5)
+	sphere.print()
+	
+	
 	# camera
 	var viewport_height = 2.0
 	var viewport_width = viewport_height * (float(WIDTH) / HEIGHT)
@@ -24,9 +29,7 @@ func _ready():
 	viewport_upper_left -= Vector3(0, 0, focal_length)
 	viewport_upper_left -= viewport_upper_right / 2
 	viewport_upper_left -= viewport_bottom_left / 2
-	
 	var start_pixel = viewport_upper_left + 0.5 * (delta_x + delta_y)
-	print(start_pixel)
 	
 	# render image
 	var image = Image.new()
