@@ -53,12 +53,12 @@ func render():
 			var color = ray_color(ray, world)
 			image.set_pixel(x, y, color)
 			
-	# image.save_png("render.png")
+	image.save_png("render.png")
 	texture = ImageTexture.create_from_image(image)
 
 func ray_color(ray: Ray, world: Hittable):
 	var rec = HitRecord.new()
-	if (world.hit(ray, 0, INF, rec)):
+	if (world.hit(ray, Interval.new(0, INF), rec)):
 		var c = rec.normal + Vector3(1, 1, 1)
 		return 0.5 * Color(c.x, c.y, c.z)
 	else:

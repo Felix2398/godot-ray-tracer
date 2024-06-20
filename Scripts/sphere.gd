@@ -8,7 +8,7 @@ func _init(sphere_center: Vector3, sphere_radius: float):
 	self.center = sphere_center
 	self.radius = sphere_radius
 
-func hit(ray: Ray, ray_tmin: float, ray_tmax: float, rec: HitRecord) -> bool:
+func hit(ray: Ray, ray_t: Interval, rec: HitRecord) -> bool:
 	var oc = center - ray.origin
 	var a = ray.direction.length_squared()
 	var h = ray.direction.dot(oc)
@@ -22,9 +22,9 @@ func hit(ray: Ray, ray_tmin: float, ray_tmax: float, rec: HitRecord) -> bool:
 	
 	# find the nearest root that lies in the acceptable range
 	var root = (h - sqrtd) / a
-	if (root <= ray_tmin || root >= ray_tmax):
+	if (!ray_t.surrounds(root)):
 		root = (h + sqrtd) / a
-		if (root <= ray_tmin || root >= ray_tmax):
+		if (!ray_t.surrounds(root)):
 			return false
 			
 	rec.t = root
