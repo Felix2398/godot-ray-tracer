@@ -1,10 +1,10 @@
 class_name RenderCamera
 extends RefCounted
 
-var image_width = 800
-var image_height = 600
+var image_width: int
+var image_height: int
 
-var samples_per_pixel = 1
+var samples_per_pixel: int
 var pixel_sample_scale: float
 
 var camera_center = Vector3(0, 0, 0)
@@ -40,8 +40,14 @@ func render(world: Hittable) -> Image:
 	
 	var image = Image.new()
 	image = Image.create(image_width, image_height, false, Image.FORMAT_RGB8)
-	for x in image_width:
-		for y in image_height:
+	
+	Status.current_max_pixel = image_width * image_height
+	
+	for y in image_height:
+		for x in image_width:
+			# Update status info
+			Status.current_pixel_id = y * image_width + x + 1;
+			
 			var pixel_color = Color(0, 0, 0)
 			for sample in range(samples_per_pixel):
 				var ray = get_ray(x, y)
