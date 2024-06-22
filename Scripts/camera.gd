@@ -14,6 +14,8 @@ var start_pixel: Vector3
 var delta_x: Vector3
 var delta_y: Vector3
 
+var max_ray_bounces: int
+
 func initialize():
 	var viewport_height = 2.0
 	var viewport_width = viewport_height * (float(image_width) / image_height)
@@ -51,22 +53,25 @@ func render(world: Hittable) -> Image:
 			var pixel_color = Color(0, 0, 0)
 			for sample in range(samples_per_pixel):
 				var ray = get_ray(x, y)
-				pixel_color += ray_color(ray, world)
+				pixel_color += ray_color(ray, max_ray_bounces, world)
 			
 			var color = pixel_sample_scale * pixel_color
 			image.set_pixel(x, y, color)
 	
 	return image
 
-func ray_color(ray: Ray, world: Hittable):
+func ray_color(ray: Ray, depth: int, world: Hittable):
+	if depth <= 0: return Color(0.0, 0.0, 0.0)
+	
 	var rec = HitRecord.new()
-	if (world.hit(ray, Interval.new(0, INF), rec)):
-		var c = rec.normal + Vector3(1, 1, 1)
-		return 0.5 * Color(c.x, c.y, c.z)
+	if (world.hit(ray, Interval.new(0.01, INF), rec)):
+		var direction = rec.normal + Util.random_unit_vector()
+		var bounce_ray = Ray.new(rec.p, direction)
+		return 0.5 * ray_color(bounce_ray, depth - 1, world)
 	else:
 		var normalized_direction = ray.direction.normalized()
 		var a = 0.5 * (normalized_direction.y + 1.0)
-		return (1.0 - a) * Color.WHITE + a * Color.SKY_BLUE
+		return (1.0 - a) * Color(1.0, 1.0, 1.0) + a * Color(0.5, 0.7, 1.0)
 
 func get_ray(x: int, y: int) -> Ray:
 	var offset = sample_square()
