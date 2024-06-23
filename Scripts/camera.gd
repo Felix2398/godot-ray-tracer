@@ -54,9 +54,14 @@ func render(world: Hittable) -> Image:
 			for sample in range(samples_per_pixel):
 				var ray = get_ray(x, y)
 				pixel_color += ray_color(ray, max_ray_bounces, world)
+			var linear_color = pixel_sample_scale * pixel_color
 			
-			var color = pixel_sample_scale * pixel_color
-			image.set_pixel(x, y, color)
+			var r = Util.linear_to_gamma(linear_color.r)
+			var g = Util.linear_to_gamma(linear_color.b)
+			var b = Util.linear_to_gamma(linear_color.b)
+			var gamma_color = Color(r, g, b)
+			
+			image.set_pixel(x, y, gamma_color)
 	
 	return image
 

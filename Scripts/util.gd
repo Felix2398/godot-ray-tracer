@@ -23,3 +23,7 @@ static func random_on_hemisphere(normal: Vector3) -> Vector3:
 		return on_unit_sphere
 	else:
 		return on_unit_sphere * -1
+
+static func linear_to_gamma(linear_component: float):
+	if linear_component > 0: return sqrt(linear_component)
+	else: return 0

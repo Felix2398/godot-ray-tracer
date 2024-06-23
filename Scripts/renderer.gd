@@ -39,9 +39,9 @@ func render():
 	
 	# init camera and render image
 	var cam = RenderCamera.new()
-	cam.image_width = 400
-	cam.image_height = 300
-	cam.samples_per_pixel = 1
+	cam.image_width = 800
+	cam.image_height = 600
+	cam.samples_per_pixel = 16
 	cam.max_ray_bounces = 5
 	image = cam.render(world)
 	new_image_ready = true
