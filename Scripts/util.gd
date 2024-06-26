@@ -35,3 +35,9 @@ static func vector_is_near_zero(v: Vector3) -> bool:
 
 static func reflect(v: Vector3, normal: Vector3) -> Vector3:
 	return v - 2 * v.dot(normal) * normal
+
+static func refract(v: Vector3, normal: Vector3, etai_over_etat) -> Vector3:
+	var cos_theta = min((v * -1).dot(normal), 1.0)
+	var r_out_perp: Vector3 = etai_over_etat * (v + cos_theta * normal)
+	var r_out_parallel: Vector3 = -1 * sqrt(abs(1.0 - r_out_perp.length_squared())) * normal
+	return r_out_perp + r_out_parallel

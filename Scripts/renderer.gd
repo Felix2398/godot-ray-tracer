@@ -37,7 +37,7 @@ func render():
 	
 	var material_ground = LambertianMaterial.new(Color(0.8, 0.8, 0.0))
 	var material_center = LambertianMaterial.new(Color(0.1, 0.2, 0.5))
-	var material_left = MetalMaterial.new(Color(0.8, 0.8, 0.8), 0.3)
+	var material_left = DielectricMaterial.new(1.0 / 1.33)
 	var material_right = MetalMaterial.new(Color(0.6, 0.6, 0.2), 1.0)
 	
 	var white = LambertianMaterial.new(Color.WHITE)
@@ -49,10 +49,11 @@ func render():
 	
 	# init camera and render image
 	var cam = RenderCamera.new()
-	cam.image_width = 800
-	cam.image_height = 600
+	var scale: float = 1.0
+	cam.image_width = 800 / scale
+	cam.image_height = 600 / scale
 	cam.samples_per_pixel = 1
-	cam.max_ray_bounces = 3
+	cam.max_ray_bounces = 8
 	image = cam.render(world)
 	new_image_ready = true
 
