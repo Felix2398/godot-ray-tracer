@@ -7,6 +7,6 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	self.max_value = Status.current_max_pixel
 	self.value = Status.current_pixel_id

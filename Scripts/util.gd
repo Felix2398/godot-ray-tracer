@@ -27,3 +27,11 @@ static func random_on_hemisphere(normal: Vector3) -> Vector3:
 static func linear_to_gamma(linear_component: float):
 	if linear_component > 0: return sqrt(linear_component)
 	else: return 0
+
+# Return true if the vector is close to zero in all dimensions
+static func vector_is_near_zero(v: Vector3) -> bool:
+	var s = 1e-8
+	return  abs(v.x) < s and abs(v.y) < s and abs(v.z) < s
+
+static func reflect(v: Vector3, normal: Vector3) -> Vector3:
+	return v - 2 * v.dot(normal) * normal

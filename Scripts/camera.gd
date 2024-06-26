@@ -57,7 +57,7 @@ func render(world: Hittable) -> Image:
 			var linear_color = pixel_sample_scale * pixel_color
 			
 			var r = Util.linear_to_gamma(linear_color.r)
-			var g = Util.linear_to_gamma(linear_color.b)
+			var g = Util.linear_to_gamma(linear_color.g)
 			var b = Util.linear_to_gamma(linear_color.b)
 			var gamma_color = Color(r, g, b)
 			
@@ -70,9 +70,11 @@ func ray_color(ray: Ray, depth: int, world: Hittable):
 	
 	var rec = HitRecord.new()
 	if (world.hit(ray, Interval.new(0.01, INF), rec)):
-		var direction = rec.normal + Util.random_unit_vector()
-		var bounce_ray = Ray.new(rec.p, direction)
-		return 0.5 * ray_color(bounce_ray, depth - 1, world)
+		if rec.mat == null: return Color.DEEP_PINK
+		
+		var ray_out = rec.mat.get_ray_out(ray, rec)
+		if ray_out != null: return rec.mat.get_attenuation() * ray_color(ray_out, depth - 1, world)
+		else: return Color(0.0, 0.0, 0.0)
 	else:
 		var normalized_direction = ray.direction.normalized()
 		var a = 0.5 * (normalized_direction.y + 1.0)

@@ -5,6 +5,7 @@ var p: Vector3
 var normal: Vector3
 var t: float
 var front_face: bool
+var mat: MyMaterial
 
 func set_face_normal(ray: Ray, outward_normal: Vector3):
 	# its assumed that outward_normal has unit length
@@ -19,3 +20,4 @@ func copy_from(other: HitRecord):
 	self.normal = other.normal
 	self.t = other.t
 	self.front_face = other.front_face
+	self.mat = other.mat

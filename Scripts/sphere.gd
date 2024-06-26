@@ -3,10 +3,12 @@ extends Hittable
 
 var center: Vector3
 var radius: float
+var material: MyMaterial
 
-func _init(sphere_center: Vector3, sphere_radius: float):
+func _init(sphere_center: Vector3, sphere_radius: float, sphere_material: MyMaterial):
 	self.center = sphere_center
 	self.radius = sphere_radius
+	self.material = sphere_material
 
 func hit(ray: Ray, ray_t: Interval, rec: HitRecord) -> bool:
 	var oc = center - ray.origin
@@ -31,6 +33,7 @@ func hit(ray: Ray, ray_t: Interval, rec: HitRecord) -> bool:
 	rec.p = ray.at(rec.t)
 	var outward_normal = (rec.p - center) / radius
 	rec.set_face_normal(ray, outward_normal)
+	rec.mat = material
 	
 	return true
 
