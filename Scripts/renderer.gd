@@ -37,22 +37,22 @@ func render():
 	
 	var material_ground = LambertianMaterial.new(Color(0.8, 0.8, 0.0))
 	var material_center = LambertianMaterial.new(Color(0.1, 0.2, 0.5))
-	var material_left = DielectricMaterial.new(1.0 / 1.33)
+	var material_left = DielectricMaterial.new(1.5)
+	var material_bubble = DielectricMaterial.new(1.0 / 1.5)
 	var material_right = MetalMaterial.new(Color(0.6, 0.6, 0.2), 1.0)
-	
-	var white = LambertianMaterial.new(Color.WHITE)
 	
 	world.add(Sphere.new(Vector3(0, -100.5, -1), 100, material_ground))
 	world.add(Sphere.new(Vector3(0, 0, -1.2), 0.5, material_center))
 	world.add(Sphere.new(Vector3(-1.0, 0, -1), 0.5, material_left))
+	world.add(Sphere.new(Vector3(-1.0, 0, -1), 0.4, material_bubble))
 	world.add(Sphere.new(Vector3(1.0, 0, -1), 0.5, material_right))
 	
 	# init camera and render image
 	var cam = RenderCamera.new()
-	var scale: float = 1.0
-	cam.image_width = 800 / scale
-	cam.image_height = 600 / scale
-	cam.samples_per_pixel = 1
+	var scale_value: float = 1.0
+	cam.image_width = 800 / scale_value
+	cam.image_height = 600 / scale_value
+	cam.samples_per_pixel = 4
 	cam.max_ray_bounces = 8
 	image = cam.render(world)
 	new_image_ready = true
