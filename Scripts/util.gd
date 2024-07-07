@@ -41,3 +41,10 @@ static func refract(v: Vector3, normal: Vector3, etai_over_etat) -> Vector3:
 	var r_out_perp: Vector3 = etai_over_etat * (v + cos_theta * normal)
 	var r_out_parallel: Vector3 = -1 * sqrt(abs(1.0 - r_out_perp.length_squared())) * normal
 	return r_out_perp + r_out_parallel
+
+
+static func random_in_unit_disk() -> Vector3:
+	while true:
+		var p = Vector3(randf() * 2.0 - 1.0, randf() * 2.0 - 1.0, 0)
+		if p.length_squared() < 1: return p
+	return Vector3(0, 0, 0)

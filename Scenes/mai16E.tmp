@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://v1k845c6aa4k"]
+[gd_scene load_steps=3 format=3 uid="uid://v1k845c6aa4k"]
 
 [ext_resource type="Script" path="res://Scripts/renderer.gd" id="2_vd6l5"]
 [ext_resource type="Script" path="res://Scripts/pixel_progress_bar.gd" id="3_sx1iq"]
-[ext_resource type="Script" path="res://Scenes/timer.gd" id="3_u3owu"]
 
 [node name="Main" type="Node"]
 
@@ -27,14 +26,5 @@ offset_top = 3.0
 offset_right = 143.0
 offset_bottom = 30.0
 script = ExtResource("3_sx1iq")
-
-[node name="Timer" type="Label" parent="Status UI"]
-layout_mode = 0
-offset_left = 160.0
-offset_top = 4.0
-offset_right = 224.0
-offset_bottom = 27.0
-text = "99:99:99"
-script = ExtResource("3_u3owu")
 
 [node name="World" type="Node3D" parent="."]
