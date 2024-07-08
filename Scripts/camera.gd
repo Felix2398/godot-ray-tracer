@@ -34,51 +34,73 @@ var focus_dist: float = 10
 var defocus_disk_u: Vector3
 var defocus_disk_v: Vector3
 
+
+func _init():
+	self.image_width = Settings.image_width
+	self.image_height = Settings.image_height
+	self.samples_per_pixel = Settings.samples_per_pixel
+	self.max_ray_bounces = Settings.max_ray_bounces
+	
+	self.vfov = Settings.vfov
+	self.look_from = Settings.look_from
+	self.look_at = Settings.look_at
+	self.vup = Settings.vup
+	
+	self.defocus_angle = Settings.defocus_angle
+	self.focus_dist = Settings.focus_dist
+
+
+# Calculates all necessary values for the rendering 
 func initialize():
 	camera_center = look_from
+	pixel_sample_scale = 1.0 / samples_per_pixel
 	
+	# Calculate the viewport
 	var theta: float = deg_to_rad(vfov)
 	var h: float = tan(theta / 2)
 	var viewport_height: float = 2.0 * h * focus_dist
 	var viewport_width = viewport_height * (float(image_width) / image_height)
-	
-	pixel_sample_scale = 1.0 / samples_per_pixel
 	
 	# Camera frame basis vectors
 	w = (look_from - look_at).normalized()
 	u = (vup.cross(w)).normalized()
 	v = w.cross(u)
 	
-	# calculate viewport corners
+	# Calculate viewport corners
 	var viewport_upper_right = viewport_width * u
 	var viewport_bottom_left = viewport_height * -v
 	
-	# calculate the space between each pixel
+	# Calculate the space between each pixel
 	delta_x = viewport_upper_right / image_width
 	delta_y = viewport_bottom_left / image_height
 	
-	# calculate the position of the upper left pixel
+	# Calculate the position of the upper left pixel
 	var viewport_upper_left = camera_center
 	viewport_upper_left -= (focus_dist * w)
 	viewport_upper_left -= viewport_upper_right / 2
 	viewport_upper_left -= viewport_bottom_left / 2
 	start_pixel = viewport_upper_left + 0.5 * (delta_x + delta_y)
 	
-	# calculate the camera defocus disk basis vectors
+	# Calculate the camera defocus disk basis vectors
 	var defocus_radius = focus_dist * tan(deg_to_rad(defocus_angle / 2))
 	defocus_disk_u = u * defocus_radius
 	defocus_disk_v = v * defocus_radius
 
+
+# Loops over every pixel in the image and calculates the color
 func render(world: Hittable) -> Image:
 	initialize()
 	
+	var chunk_width = (chunk_end.x - chunk_start.x)
 	var image = Image.new()
 	image = Image.create(image_width, image_height, false, Image.FORMAT_RGB8)
 	
 	for y in range(chunk_start.y, chunk_end.y):
 		for x in range(chunk_start.x, chunk_end.x):
 			# Update status info
-			Status.current_pixel_ids[camera_id] = (y - chunk_start.y) * (chunk_end.x - chunk_start.x) + (x - chunk_start.x) + 1
+			var oy = (y - chunk_start.y)
+			var ox = (x - chunk_start.x)
+			Status.current_pixel_ids[camera_id] = oy * chunk_width + ox  + 1
 			
 			var pixel_color = Color(0, 0, 0)
 			for sample in range(samples_per_pixel):
@@ -94,6 +116,7 @@ func render(world: Hittable) -> Image:
 			image.set_pixel(x, y, gamma_color)
 	
 	return image
+
 
 func ray_color(ray: Ray, depth: int, world: Hittable):
 	if depth <= 0: return Color(0.0, 0.0, 0.0)
@@ -122,8 +145,16 @@ func get_ray(x: int, y: int) -> Ray:
 	var ray_direction = pixel_sample - ray_origin
 	return Ray.new(ray_origin, ray_direction)
 
+
 func sample_square() -> Vector3:
 	return Vector3(randf() - 0.5, randf() - 0.5, 0)
+
+
+# Returns a random point in the camera defocus disk
+func defocus_disk_sample() -> Vector3:
+	var p = Util.random_in_unit_disk()
+	return camera_center + (p.x * defocus_disk_u) + (p.y * defocus_disk_v)
+
 
 func get_copy() -> RenderCamera:
 	var cam = RenderCamera.new()
@@ -141,9 +172,3 @@ func get_copy() -> RenderCamera:
 	cam.focus_dist = self.focus_dist
 	
 	return cam
-
-
-func defocus_disk_sample() -> Vector3:
-	# Returns a random point in the camera defocus disk
-	var p = Util.random_in_unit_disk()
-	return camera_center + (p.x * defocus_disk_u) + (p.y * defocus_disk_v)

@@ -17,9 +17,11 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Status="*res://Scripts/singletons/status.gd"
+Status="*res://Scripts/Singletons/status.gd"
+Settings="*res://Scripts/Singletons/settings.gd"
+World="*res://Scripts/Singletons/world.gd"
 
 [display]
 
-window/size/viewport_width=800
-window/size/viewport_height=600
+window/size/viewport_width=750
+window/size/viewport_height=500

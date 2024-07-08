@@ -3,8 +3,10 @@ extends MyMaterial
 
 var refraction_index: float
 
+
 func _init(dielectric_refraction_index: float):
 	self.refraction_index = dielectric_refraction_index
+
 
 func get_ray_out(ray_in: Ray, rec: HitRecord) -> Ray:
 	var ri: float = refraction_index
@@ -23,11 +25,13 @@ func get_ray_out(ray_in: Ray, rec: HitRecord) -> Ray:
 
 	return ray_out
 
+
 func get_attenuation() -> Color:
 	return Color.WHITE
 
+
+# Use Schlicks approximation for reflectance
 static func reflectance(cosine: float, refraction_index_value: float) -> float:
-	# Use Schlicks approximation for reflectance
 	var r0: float = (1.0 - refraction_index_value) / (1.0 + refraction_index_value)
 	r0 = pow(r0, 2)
 	return r0 + (1.0 - r0) * pow((1.0 - cosine), 5)

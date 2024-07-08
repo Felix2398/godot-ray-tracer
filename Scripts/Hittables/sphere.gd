@@ -36,6 +36,3 @@ func hit(ray: Ray, ray_t: Interval, rec: HitRecord) -> bool:
 	rec.mat = material
 	
 	return true
-
-func print():
-	print("%v, %f",center, radius)

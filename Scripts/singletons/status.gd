@@ -5,9 +5,10 @@ var current_max_pixel: int
 var thread_coun
 var current_pixel_ids = []
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	current_max_pixel = Settings.image_width * Settings.image_height
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
